@@ -2,11 +2,16 @@ import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from joblib import load
 # from google.colab import drive
 # drive.mount('/content/drive')
-model = tf.keras.models.load_model('sentiment_model.h5')
-from joblib import load
-tokenizer = load('tokenizer.joblib')
+
+try:
+    model = tf.keras.models.load_model('sentiment_model.h5')
+    tokenizer = load('tokenizer.joblib')
+except Exception as e:
+    st.error(f"Error loading model: {e}")
+
 max_length = 100  # Adjust this value based on your training data
 
 # Create a function to predict sentiment
