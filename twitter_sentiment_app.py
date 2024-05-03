@@ -2,27 +2,34 @@ import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from joblib import load
 
-try:
-    model = tf.keras.models.load_model('sentiment_model.h5')
-    tokenizer = load('tokenizer.joblib')
-except Exception as e:
-    st.error(f"Error loading model: {e}")
+# Load the saved model
+model = tf.keras.models.load_model('sentiment_model.h5')
 
+# Load the tokenizer
+tokenizer = Tokenizer(num_words=10000)  # You need to set the same value as used during training
+
+# Define the maximum sequence length (you should use the same value used during training)
 max_length = 250  # Adjust this value based on your training data
 
 # Create a function to predict sentiment
 def predict_sentiment(text):
-    # Tokenize and pad the input text
-    sequences = tokenizer.texts_to_sequences([text])
-    padded = pad_sequences(sequences, maxlen=max_length, truncating='post')
+    try:
+        # Tokenize and pad the input text
+        sequences = tokenizer.texts_to_sequences([text])
+        if not sequences:
+            raise ValueError("Empty sequence after tokenization.")
+            
+        padded = pad_sequences(sequences, maxlen=max_length, truncating='post')
 
-    # Predict the sentiment
-    prediction = model.predict(padded)
+        # Predict the sentiment
+        prediction = model.predict(padded)
 
-    return prediction
+        return prediction
 
+    except IndexError as e:
+        st.error(f"Error during tokenization or padding: {e}")
+        return None
 # Set up Streamlit app
 st.title("Sentiment Analysis App")
 
