@@ -3,8 +3,6 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from joblib import load
-# from google.colab import drive
-# drive.mount('/content/drive')
 
 try:
     model = tf.keras.models.load_model('sentiment_model.h5')
@@ -39,4 +37,3 @@ if st.button("Predict"):
         st.write(f"Sentiment: {sentiment}")
     else:
         st.warning("Please enter some text for analysis.")
-
