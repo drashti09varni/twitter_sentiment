@@ -15,14 +15,10 @@ except Exception as e:
 max_length = 100  # Adjust this value based on your training data
 
 # Create a function to predict sentiment
-def predict_sentiment(text):
-    # Tokenize and pad the input text
+def predict_sentiment(text, tokenizer):
     sequences = tokenizer.texts_to_sequences([text])
     padded = pad_sequences(sequences, maxlen=max_length, truncating='post')
-
-    # Predict the sentiment
     prediction = model.predict(padded)
-
     return prediction
 
 # Set up Streamlit app
@@ -33,8 +29,8 @@ user_input = st.text_area("Enter your text:")
 
 if st.button("Predict"):
     if user_input:
-        # Call the prediction function
-        prediction = predict_sentiment(user_input)
+        # Call the prediction function with tokenizer as parameter
+        prediction = predict_sentiment(user_input, tokenizer)
 
         # Determine the sentiment based on the prediction
         sentiment = ["Negative", "Neutral", "Positive"][prediction.argmax()]
@@ -43,3 +39,4 @@ if st.button("Predict"):
         st.write(f"Sentiment: {sentiment}")
     else:
         st.warning("Please enter some text for analysis.")
+
